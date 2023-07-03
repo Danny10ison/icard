@@ -20,6 +20,17 @@ Think about what you are missing, come up with the perfect service, and implemen
 
 ![Image of Figma Prototype](https://github.com/Danny10ison/icard/blob/main/inDrive-iCard-UIUX.png)
 
+## API Docs
+
+Once your api is running on local machine, follow the links
+below to interact with the api.
+
+[Redoc Documentation](http://localhost:8000/redoc)
+
+[Swagger UI](http://127.0.0.1:8000/docs)
+
+![Image of Redoc on local](https://github.com/Danny10ison/icard/blob/main/inDrive-iCard-FastAPI_docs.png)
+
 ## Start
 
 - Create a virtual environment -NIX OS
