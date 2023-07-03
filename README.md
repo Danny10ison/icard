@@ -27,9 +27,9 @@ below to interact with the api.
 
 [Redoc Documentation](http://localhost:8000/redoc)
 
-[Swagger UI](http://127.0.0.1:8000/docs)
-
 ![Image of Redoc on local](https://github.com/Danny10ison/icard/blob/main/inDrive-iCard-FastAPI_docs.png)
+
+[Swagger UI](http://127.0.0.1:8000/docs)
 
 ## Start
 
