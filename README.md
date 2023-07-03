@@ -18,7 +18,7 @@ Think about what you are missing, come up with the perfect service, and implemen
 
 [Prototype Link](https://www.figma.com/proto/tqzf8MOUuXfnRJceFqfrVy/UI%2FUX?type=design&node-id=65-2738&t=4PAOT641FQ74ky0d-1&scaling=scale-down&page-id=0%3A1&starting-point-node-id=65%3A2735&mode=design)
 
-![Image of Figma Prototype](#)
+![Image of Figma Prototype](https://github.com/Danny10ison/icard/blob/main/inDrive-iCard-UIUX.png)
 
 ## Start
 
