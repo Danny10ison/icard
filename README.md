@@ -22,6 +22,53 @@ Think about what you are missing, come up with the perfect service, and implemen
 
 ## Start
 
+- Create a virtual environment -NIX OS
+
+  ```bash
+  python3 -m venv env
+  ```
+
+  Windows
+
+  ```powershell
+  python.exe -m venv env
+  ```
+
+- Activate the virtual environment
+  -NIX OS
+
+  ```bash
+  env/bin/activate
+  ```
+
+  Windows
+
+  ```powershell
+  .\env\Scripts\activate.bat
+  ```
+
+- Install all required packages -NIX OS
+
+  ```bash
+  pip install -r requirements.txt
+  ```
+
+  Windows
+
+  ```powershell
+  .\env\Scripts\pip.exe install -r .\requirements.txt
+  ```
+
+## Run the app
+
+-NIX
+
 ```bash
-pip install requirements.txt
+uvicorn main:app
+```
+
+Windows
+
+```powershell
+.\env\Scripts\python.exe -m uvicorn main:app
 ```
