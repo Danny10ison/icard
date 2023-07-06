@@ -4,7 +4,7 @@ class AccountBase(BaseModel):
     account_number: str
     balance: float = 0
 
-class AccountCreate(BaseModel):
+class AccountCreate(AccountBase):
     user_id: int = None
     driver_id: int = None
 
