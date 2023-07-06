@@ -2,13 +2,8 @@ import uuid
 
 from app.database.db import SessionLocal
 from app.models.account import Account
-from app.models.user import User
-# from app.schemas.account import AccountTopUp, AccountWithdraw, AccountDetails
 from app.schemas.account import AccountCreate
-from app.models.account import Account
 from app.database.db import SessionLocal
-
-import uuid
 
 def generate_account_number():
     account_number = str(uuid.uuid4().int)[:12]
@@ -96,3 +91,14 @@ def top_up_account(amount: float, user_id: int = None, driver_id: int = None):
             return account.balance
         else:
             raise ValueError("Account not found.")
+
+def pay_driver(user_id: int, driver_id: int, amount: float):
+    with SessionLocal() as session:
+        # Withdraw the amount from the user's account
+        user_account = withdraw_from_account(amount, user_id=user_id)
+
+        # Top up the amount to the driver's account
+        driver_account = top_up_account(amount, driver_id=driver_id)
+
+        # Return the updated balances
+        return user_account, driver_account
