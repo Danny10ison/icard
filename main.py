@@ -6,8 +6,11 @@ from app.database.db import Base, engine
 from app.schemas.user import UserCreate, UserUpdate
 from app.schemas.driver import DriverCreate, DriverUpdate
 from app.schemas.account import AccountCreate, AccountBase
-from app.database.crud.crud_account import create_account, get_account_by_user_or_driver_id, delete_account_by_user_or_driver_id, withdraw_from_account, top_up_account
-
+from app.database.crud.crud_account import (create_account,
+                                            get_account_by_user_or_driver_id,
+                                            delete_account_by_user_or_driver_id,
+                                            withdraw_from_account,
+                                            top_up_account)
 
 from app.database.crud import crud_user, crud_account, crud_driver
 
@@ -139,8 +142,8 @@ def get_driver_details(driver_id: int):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@app.post("/drivers")
-def create_driver(driver: DriverCreate):
+@app.post("/drivers/signup")
+def register_driver(driver: DriverCreate):
     try:
         driver_id = crud_driver.create_driver(driver)
         return {"message": "Driver created successfully", "driver_id": driver_id}
@@ -172,17 +175,21 @@ def delete_driver(driver_id: int):
 #########################################################
 
 @app.post("/accounts/create")
-def create_account(account_data: AccountCreate, user_id: int = None, driver_id: int = None):
+def create_account(user_id: int = None, driver_id: int = None):
     try:
-        account_number = create_account(account_data, user_id=user_id, driver_id=driver_id)
+        account_number = crud_account.generate_account_number()
+        account_data = AccountCreate(account_number=account_number)
+        account_number = crud_account.create_account(account_data, user_id=user_id, driver_id=driver_id)
         return {"account_number": account_number}
     except ValueError as e:
         return {"error": str(e)}
 
+
+
 @app.get("/accounts/details")
 def get_account_details(user_id: int = None, driver_id: int = None):
     try:
-        account = get_account_by_user_or_driver_id(user_id=user_id, driver_id=driver_id)
+        account = crud_account.get_account_by_user_or_driver_id(user_id=user_id, driver_id=driver_id)
         return {"account": AccountBase.from_orm(account)}
     except ValueError as e:
         return {"error": str(e)}
@@ -190,7 +197,7 @@ def get_account_details(user_id: int = None, driver_id: int = None):
 @app.delete("/accounts")
 def delete_account(user_id: int = None, driver_id: int = None):
     try:
-        account_number = delete_account_by_user_or_driver_id(user_id=user_id, driver_id=driver_id)
+        account_number = crud_account.delete_account_by_user_or_driver_id(user_id=user_id, driver_id=driver_id)
         return {"account_number": account_number}
     except ValueError as e:
         return {"error": str(e)}
@@ -198,7 +205,7 @@ def delete_account(user_id: int = None, driver_id: int = None):
 @app.post("/accounts/withdraw")
 def withdraw_from_account(amount: float, user_id: int = None, driver_id: int = None):
     try:
-        balance = withdraw_from_account(amount, user_id=user_id, driver_id=driver_id)
+        balance = crud_account.withdraw_from_account(amount, user_id=user_id, driver_id=driver_id)
         return {"balance": balance}
     except ValueError as e:
         return {"error": str(e)}
@@ -206,7 +213,20 @@ def withdraw_from_account(amount: float, user_id: int = None, driver_id: int = N
 @app.post("/accounts/top-up")
 def top_up_account(amount: float, user_id: int = None, driver_id: int = None):
     try:
-        balance = top_up_account(amount, user_id=user_id, driver_id=driver_id)
+        balance = crud_account.top_up_account(amount, user_id=user_id, driver_id=driver_id)
         return {"balance": balance}
+    except ValueError as e:
+        return {"error": str(e)}
+
+@app.post("/accounts/pay-driver")
+def pay_driver(user_id: int, driver_id: int, amount: float):
+    try:
+        # Deduct the payment amount from the user's account
+        user_balance = crud_account.withdraw_from_account(amount, user_id=user_id)
+
+        # Add the payment amount to the driver's account
+        driver_balance = crud_account.top_up_account(amount, driver_id=driver_id)
+
+        return {"user_balance": user_balance, "driver_balance": driver_balance}
     except ValueError as e:
         return {"error": str(e)}
