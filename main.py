@@ -6,12 +6,6 @@ from app.database.db import Base, engine
 from app.schemas.user import UserCreate, UserUpdate
 from app.schemas.driver import DriverCreate, DriverUpdate
 from app.schemas.account import AccountCreate, AccountBase
-from app.database.crud.crud_account import (create_account,
-                                            get_account_by_user_or_driver_id,
-                                            delete_account_by_user_or_driver_id,
-                                            withdraw_from_account,
-                                            top_up_account)
-
 from app.database.crud import crud_user, crud_account, crud_driver
 
 app = FastAPI(
@@ -19,6 +13,7 @@ app = FastAPI(
     description="inDrive's virtual payment system",
     version="1.0.0"
     )
+
 
 # Customizing the Swagger UI
 def custom_openapi():
@@ -45,9 +40,12 @@ def custom_openapi():
     }
     return openapi_schema
 
+
 app.openapi = custom_openapi
 
+
 Base.metadata.create_all(bind=engine)
+
 
 @app.get("/")
 def home():
@@ -57,10 +55,10 @@ def home():
         "year": "2023"
         }
 
+
 ###############################################################################
 # Users
 ###############################################################################
-
 @app.get("/users")
 def get_all_users():
     try:
@@ -68,6 +66,7 @@ def get_all_users():
         return {"users": users}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
 
 @app.get("/users/{user_id}")
 def get_user_details(user_id: int):
@@ -89,6 +88,7 @@ def register_user(user: UserCreate):
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
 
+
 @app.post("/users/login")
 def user_login(phone_number: str):
     try:
@@ -100,6 +100,7 @@ def user_login(phone_number: str):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+
 @app.put("/users/{user_id}")
 def update_user(user_id: int, updated_user: UserUpdate):
     try:
@@ -107,6 +108,7 @@ def update_user(user_id: int, updated_user: UserUpdate):
         return {"message": "User updated successfully"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
 
 @app.delete("/users/{user_id}")
 def delete_user(user_id: int):
@@ -119,10 +121,10 @@ def delete_user(user_id: int):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+
 ###############################################################################
 # Drivers
 ###############################################################################
-
 @app.get("/drivers")
 def get_all_drivers():
     try:
@@ -130,6 +132,7 @@ def get_all_drivers():
         return {"drivers": drivers}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
 
 @app.get("/drivers/{driver_id}")
 def get_driver_details(driver_id: int):
@@ -142,13 +145,16 @@ def get_driver_details(driver_id: int):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+
 @app.post("/drivers/signup")
 def register_driver(driver: DriverCreate):
     try:
         driver_id = crud_driver.create_driver(driver)
-        return {"message": "Driver created successfully", "driver_id": driver_id}
+        return {
+            "message": "Driver created successfully", "driver_id": driver_id}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
 
 @app.put("/drivers/{driver_id}")
 def update_driver(driver_id: int, updated_driver: DriverUpdate):
@@ -158,12 +164,16 @@ def update_driver(driver_id: int, updated_driver: DriverUpdate):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+
 @app.delete("/drivers/{driver_id}")
 def delete_driver(driver_id: int):
     try:
         result = crud_driver.delete_driver(driver_id)
         if result:
-            return {"message": "Driver deleted successfully", "driver_id": driver_id}
+            return {
+                "message": "Driver deleted successfully",
+                "driver_id": driver_id
+                }
         else:
             raise HTTPException(status_code=404, detail="Driver not found")
     except Exception as e:
@@ -173,59 +183,72 @@ def delete_driver(driver_id: int):
 #########################################################
 # account
 #########################################################
-
 @app.post("/accounts/create")
 def create_account(user_id: int = None, driver_id: int = None):
     try:
         account_number = crud_account.generate_account_number()
         account_data = AccountCreate(account_number=account_number)
-        account_number = crud_account.create_account(account_data, user_id=user_id, driver_id=driver_id)
+        account_number = crud_account.create_account(
+            account_data, user_id=user_id, driver_id=driver_id)
         return {"account_number": account_number}
     except ValueError as e:
         return {"error": str(e)}
-
 
 
 @app.get("/accounts/details")
 def get_account_details(user_id: int = None, driver_id: int = None):
     try:
-        account = crud_account.get_account_by_user_or_driver_id(user_id=user_id, driver_id=driver_id)
+        account = crud_account.get_account_by_user_or_driver_id(
+            user_id=user_id, driver_id=driver_id)
         return {"account": AccountBase.from_orm(account)}
     except ValueError as e:
         return {"error": str(e)}
 
+
 @app.delete("/accounts")
 def delete_account(user_id: int = None, driver_id: int = None):
     try:
-        account_number = crud_account.delete_account_by_user_or_driver_id(user_id=user_id, driver_id=driver_id)
+        account_number = crud_account.delete_account_by_user_or_driver_id(
+            user_id=user_id, driver_id=driver_id)
         return {"account_number": account_number}
     except ValueError as e:
         return {"error": str(e)}
 
+
 @app.post("/accounts/withdraw")
-def withdraw_from_account(amount: float, user_id: int = None, driver_id: int = None):
+def withdraw_from_account(
+                        amount: float,
+                        user_id: int = None,
+                        driver_id: int = None
+                        ):
     try:
-        balance = crud_account.withdraw_from_account(amount, user_id=user_id, driver_id=driver_id)
+        balance = crud_account.withdraw_from_account(
+            amount, user_id=user_id, driver_id=driver_id)
         return {"balance": balance}
     except ValueError as e:
         return {"error": str(e)}
 
+
 @app.post("/accounts/top-up")
 def top_up_account(amount: float, user_id: int = None, driver_id: int = None):
     try:
-        balance = crud_account.top_up_account(amount, user_id=user_id, driver_id=driver_id)
+        balance = crud_account.top_up_account(
+            amount, user_id=user_id, driver_id=driver_id)
         return {"balance": balance}
     except ValueError as e:
         return {"error": str(e)}
+
 
 @app.post("/accounts/pay-driver")
 def pay_driver(user_id: int, driver_id: int, amount: float):
     try:
         # Deduct the payment amount from the user's account
-        user_balance = crud_account.withdraw_from_account(amount, user_id=user_id)
+        user_balance = crud_account.withdraw_from_account(
+            amount, user_id=user_id)
 
         # Add the payment amount to the driver's account
-        driver_balance = crud_account.top_up_account(amount, driver_id=driver_id)
+        driver_balance = crud_account.top_up_account(
+            amount, driver_id=driver_id)
 
         return {"user_balance": user_balance, "driver_balance": driver_balance}
     except ValueError as e:

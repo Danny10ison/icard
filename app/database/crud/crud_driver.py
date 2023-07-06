@@ -2,6 +2,7 @@ from app.schemas.driver import DriverCreate, DriverUpdate
 from app.models.driver import Driver
 from app.database.db import SessionLocal
 
+
 # Create a new driver
 def create_driver(driver_data: DriverCreate):
     with SessionLocal() as session:
@@ -11,6 +12,7 @@ def create_driver(driver_data: DriverCreate):
         session.refresh(driver)
         return driver.id
 
+
 # Get a driver by ID
 def get_driver_details(driver_id: int):
     with SessionLocal() as session:
@@ -19,6 +21,7 @@ def get_driver_details(driver_id: int):
             return driver
         else:
             raise ValueError("Driver not found.")
+
 
 # Update driver details
 def update_driver(driver_id: int, driver_data: DriverUpdate):
@@ -31,6 +34,7 @@ def update_driver(driver_id: int, driver_data: DriverUpdate):
         else:
             raise ValueError("Driver not found.")
 
+
 # Delete a driver
 def delete_driver(driver_id: int):
     with SessionLocal() as session:
@@ -41,6 +45,7 @@ def delete_driver(driver_id: int):
             return driver.id
         else:
             raise ValueError("Driver not found.")
+
 
 # Get all drivers
 def get_all_drivers():

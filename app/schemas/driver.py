@@ -1,9 +1,11 @@
 from pydantic import BaseModel, Field
 
+
 class DriverBase(BaseModel):
     name: str
     email: str
     phone_number: str
+
 
 class DriverCreate(DriverBase):
     class Config:
@@ -15,8 +17,10 @@ class DriverCreate(DriverBase):
             }
         }
 
+
 class DriverLogin(BaseModel):
-    phone_number: str = Field(..., regex=r"^\d{10}$")  # Adding regex validation for phone_number
+    # Adding regex validation for phone_number
+    phone_number: str = Field(..., regex=r"^\d{10}$")
 
     class Config:
         schema_extra = {
@@ -24,6 +28,7 @@ class DriverLogin(BaseModel):
                 "phone_number": "1234567890"
             }
         }
+
 
 class DriverUpdate(BaseModel):
     name: str = None
@@ -36,6 +41,7 @@ class DriverUpdate(BaseModel):
                 "email": "johndoe@example.com"
             }
         }
+
 
 class DriverDelete(BaseModel):
     driver_id: int

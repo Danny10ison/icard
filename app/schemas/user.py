@@ -1,5 +1,6 @@
 from pydantic import BaseModel, Field
 
+
 class UserBase(BaseModel):
 
     name: str
@@ -19,6 +20,7 @@ class UserCreate(UserBase):
             }
         }
 
+
 class UserUpdate(BaseModel):
     name: str = None
     email: str = None
@@ -32,8 +34,10 @@ class UserUpdate(BaseModel):
             }
         }
 
+
 class UserLogin(BaseModel):
-    phone_number: str = Field(..., regex=r"^\d{10}$")  # Adding regex validation for phone_number
+    # Adding regex validation for phone_number
+    phone_number: str = Field(..., regex=r"^\d{10}$")
 
     class Config:
         schema_extra = {
@@ -41,6 +45,7 @@ class UserLogin(BaseModel):
                 "phone_number": "1234567890"
             }
         }
+
 
 class UserDelete(BaseModel):
     user_id: int
