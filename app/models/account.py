@@ -19,8 +19,8 @@ class Account(Base):
     # Define the relationship to the Driver model
     driver = relationship("Driver", back_populates="account", uselist=False)
 
-    def __init__(self, account_number: str, balance=0, user=None, driver=None):
+    def __init__(self, account_number: str, balance=0, user_id=None, driver_id=None):
         self.account_number = account_number
         self.balance = balance
-        self.user = user
-        self.driver = driver
+        self.user_id = user_id
+        self.driver_id = driver_id
