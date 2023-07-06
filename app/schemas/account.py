@@ -4,6 +4,9 @@ class AccountBase(BaseModel):
     account_number: str
     balance: float = 0
 
+    class Config:
+        orm_mode = True
+
 class AccountCreate(AccountBase):
     user_id: int = None
     driver_id: int = None
