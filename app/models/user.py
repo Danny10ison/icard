@@ -1,12 +1,19 @@
-#!/usr/bin/python3
-"""Module contains base model for database"""
-from sqlalchemy import Column, Integer, String, UniqueConstraint, ForeignKey
+"""Module contains base model for user table"""
+from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import relationship
-
 from app.database.db import Base
 
+
 class User(Base):
-    """Table format for the User entity."""
+    """Table format for the User entity.
+
+    Attributes:
+        __tablename__: the users table name\n
+        id: user id column
+        name: user name column
+        phone_number: user phone number column
+        account: defines relationship to user account table
+    """
 
     __tablename__ = "users"
 

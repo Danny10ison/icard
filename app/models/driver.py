@@ -1,12 +1,19 @@
-#!/usr/bin/python3
-"""Module contains base model for database"""
+"""Module contains base model for driver"""
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import relationship
-
 from app.database.db import Base
 
+
 class Driver(Base):
-    """Table format for the User entity."""
+    """Table format for the User entity.
+
+    Attributes:
+        __tablename__: the users table name\n
+        id: driver id column\n
+        name: driver name column\n
+        phone_number: driver phone number column\n
+        account: defines relationship to driver account table
+    """
 
     __tablename__ = "drivers"
 
